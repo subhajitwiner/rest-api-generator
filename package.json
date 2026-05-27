@@ -1,6 +1,6 @@
 {
   "name": "typescript-rest-api-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI to generate TypeScript REST API with custom templates",
   "main": "try.js",
   "scripts": {
@@ -9,7 +9,13 @@
   "bin": {
     "rag": "./index.js"
   },
-  "keywords": ["cli", "node", "typescript", "generator", "rest api"],
+  "keywords": [
+    "cli",
+    "node",
+    "typescript",
+    "generator",
+    "rest api"
+  ],
   "author": "Subhajit Majumder",
   "license": "MIT",
   "type": "commonjs",
