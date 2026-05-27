@@ -1,11 +1,8 @@
+import { ExampleRepository } from "../repositories/example.ripository";
 
 export class ExampleService {
-    constructor() { }
+    constructor(private repository: ExampleRepository) { }
     async ReturnFromService() {
-        return  await {
-            name: "test",
-            email: "test@example.com",
-            password: "test123"
-        }
+        return  await this.repository.getFromRepository();
     }
 }

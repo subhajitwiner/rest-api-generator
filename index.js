@@ -48,36 +48,15 @@ function createProject(projectName) {
   createFilesAndFolder("index.ejs", {}, "index.ts", projectName + "/src");
   createFilesAndFolder("nodemon.ejs", {}, "nodemon.json", projectName);
   createFilesAndFolder("tsconfig.ejs", {}, "tsconfig.json", projectName);
-  createFilesAndFolder(
-    "package.ejs",
-    { projectName },
-    "package.json",
-    projectName,
-  );
-  createFilesAndFolder(
-    "index.router.ejs",
-    {},
-    "index.ts",
-    projectName + "/src/router",
-  );
-  createFilesAndFolder(
-    "api.router.ejs",
-    {},
-    "api.router.ts",
-    projectName + "/src/router",
-  );
-  createFilesAndFolder(
-    "example.service.ejs",
-    {},
-    "example.service.ts",
-    projectName + "/src/services",
-  );
-  createFilesAndFolder(
-    "example.controller.ejs",
-    {},
-    "example.controller.ts",
-    projectName + "/src/controllers",
-  );
+  createFilesAndFolder("package.ejs", { projectName },"package.json",projectName);
+  createFilesAndFolder("index.router.ejs",{},"index.ts", projectName + "/src/router");
+  createFilesAndFolder("api.router.ejs",{}, "api.router.ts", projectName + "/src/router");
+  createFilesAndFolder("example.service.ejs",{},"example.service.ts",projectName + "/src/services");
+  createFilesAndFolder("example.controller.ejs",{},"example.controller.ts",projectName + "/src/controllers");
+  createFilesAndFolder("example.repository.ejs",{},"example.repository.ts",projectName + "/src/repositories");
+  createFilesAndFolder("types.ejs",{},"types.ts", projectName + "/src/systems");
+  createFilesAndFolder("container.ejs",{},"container.ts", projectName+ "/src/systems");
+  createFilesAndFolder("container.core.ejs",{},"container.core.ts", projectName+ "/src/systems");
 
   console.log("📦 Installing dependencies...");
   execSync("npm install", { cwd: projectPath, stdio: "inherit" });
