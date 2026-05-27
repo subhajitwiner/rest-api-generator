@@ -1,0 +1,6 @@
+import {Router} from 'express';
+import { ExampleController } from '../controllers/example.controller';
+export const ApiRouter = (router: Router, prefix='') => {
+    let examplerout = new ExampleController();
+    router.get(prefix+'/welcome',examplerout.welcome);
+};

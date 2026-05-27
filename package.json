@@ -1,0 +1,20 @@
+{
+  "name": "typescript-rest-api-generator",
+  "version": "1.0.0",
+  "description": "CLI to generate TypeScript REST API with custom templates",
+  "main": "try.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "rag": "./index.js"
+  },
+  "keywords": ["cli", "node", "typescript", "generator", "rest api"],
+  "author": "Subhajit Majumder",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "commander": "^14.0.3",
+    "ejs": "^5.0.2"
+  }
+}

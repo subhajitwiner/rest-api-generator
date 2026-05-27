@@ -1,0 +1,10 @@
+import express from 'express';
+import { ApiRouter } from './api.router';
+
+export class IndexRouter {
+  router = express.Router(); 
+  route(){
+    ApiRouter(this.router,'/api');
+    return this.router;
+  }
+}

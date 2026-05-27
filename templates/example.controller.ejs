@@ -1,0 +1,12 @@
+import express from "express";
+import * as bcrypt from "bcrypt";
+import dotenv from 'dotenv'
+import { ExampleService } from "../services/example.service";
+export class ExampleController {
+    exampleService = new ExampleService();
+    welcome = async (req: express.Request, res: express.Response) => {
+        let info = await this.exampleService.ReturnFromService();
+        res.status(200).json({ data: info });
+
+    };
+}
