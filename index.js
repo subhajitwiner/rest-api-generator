@@ -117,21 +117,9 @@ function createProject(projectName) {
     projectName + "/src/repositories",
   );
   createFilesAndFolder(
-    "types.ejs",
-    {},
-    "types.ts",
-    projectName + "/src/systems",
-  );
-  createFilesAndFolder(
     "container.ejs",
     {},
     "container.ts",
-    projectName + "/src/systems",
-  );
-  createFilesAndFolder(
-    "container.core.ejs",
-    {},
-    "container.core.ts",
     projectName + "/src/systems",
   );
 

@@ -1,33 +1,17 @@
-import { Container } from "./container.core";
-import { TYPES } from "./types";
-
-
-import { ExampleService } from "../services/example.service";
-import { ExampleController } from "../controllers/example.controller";
+import { createContainer, asClass, Lifetime } from "awilix";
 import { ExampleRepository } from "../repositories/example.repository";
+import { ExampleController } from "../controllers/example.controller";
+import { ExampleService } from "../services/example.service";
 
-const container = new Container();
-
+const container = createContainer();
 
 // Register dependencies
 
-// Example: Registering a repository
-container.register(TYPES.ExampleRepository, () => {
-    return new ExampleRepository();
+container.register({
+    exampleRepository: asClass(ExampleRepository).scoped(),
+    exampleService: asClass(ExampleService).scoped(),
+    exampleController: asClass(ExampleController).scoped(),
 });
 
-// Example: Registering a service with its dependencies
-container.register(TYPES.ExampleService, (c) => {
-    return new ExampleService(
-        c.get(TYPES.ExampleRepository)
-    );
-});
-
-// Example: Registering a controller with its dependencies
-container.register(TYPES.ExampleController, (c) => {
-    return new ExampleController(
-        c.get(TYPES.ExampleService)
-    );
-});
 
 export { container };

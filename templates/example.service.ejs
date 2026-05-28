@@ -1,8 +1,11 @@
 import { ExampleRepository } from "../repositories/example.repository";
 
 export class ExampleService {
-    constructor(private repository: ExampleRepository) { }
+    private readonly repository: ExampleRepository;
+    constructor({ exampleRepository }: { exampleRepository: ExampleRepository }) {
+        this.repository = exampleRepository;
+    }
     async ReturnFromService() {
-        return  await this.repository.getFromRepository();
+        return await this.repository.getFromRepository();
     }
 }

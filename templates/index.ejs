@@ -4,9 +4,10 @@ import compression from 'compression';
 import { IndexRouter } from './router';
 import cors from 'cors';
 import http from 'http';
+import { scopePerRequest } from "awilix-express";
 import { container } from './systems/container';
 const app = express();
-const indexRouter = new IndexRouter(container);
+const indexRouter = new IndexRouter();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(compression());
@@ -19,4 +20,6 @@ server.listen(port, startServer);
 function startServer(){
   console.log(`Server running on http://localhost:${port}/`);
 }
+app.use(scopePerRequest(container));
+
 app.use('/', indexRouter.route());
