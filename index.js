@@ -26,11 +26,41 @@ create
   });
 
 create
+  .command("service <name>")
+  .description("Create a new service")
+  .action((name) => {
+    createService(name);
+  });
+
+create
+  .command("repository <name>")
+  .description("Create a new repository")
+  .action((name) => {
+    createRepository(name);
+  });
+
+create
   .command("Help")
   .description("Get help for a specific command")
   .action((name) => {
+    console.log("using this command: "+
+      "\n rag create controller <name> - Create a new controller" +
+      "\n rag create service <name> - Create a new service" +
+      "\n rag create repository <name> - Create a new repository" +
+      "\n rag create model <name> - Create a new model");
+  });
+
+program
+  .command("help")
+  .description("Display help information")
+  .action(() => {
     console.log(
-      "Create a new rest api project with custom tpyescript templates",
+      "Commands: \n rag new <projectName> - Create a new Node.js project" +
+        "\n rag create --help - Get help for a specific command" +
+        "\n rag create controller <name> - Create a new controller",
+      "\n rag create service <name> - Create a new service" +
+        "\n rag create repository <name> - Create a new repository" +
+        "\n rag create model <name> - Create a new model",
     );
   });
 
@@ -50,20 +80,80 @@ function createProject(projectName) {
   createFilesAndFolder("index.ejs", {}, "index.ts", projectName + "/src");
   createFilesAndFolder("nodemon.ejs", {}, "nodemon.json", projectName);
   createFilesAndFolder("tsconfig.ejs", {}, "tsconfig.json", projectName);
-  createFilesAndFolder("package.ejs", { projectName },"package.json",projectName);
-  createFilesAndFolder("index.router.ejs",{},"index.ts", projectName + "/src/router");
-  createFilesAndFolder("api.router.ejs",{}, "api.router.ts", projectName + "/src/router");
-  createFilesAndFolder("example.service.ejs",{},"example.service.ts",projectName + "/src/services");
-  createFilesAndFolder("example.controller.ejs",{},"example.controller.ts",projectName + "/src/controllers");
-  createFilesAndFolder("example.repository.ejs",{},"example.repository.ts",projectName + "/src/repositories");
-  createFilesAndFolder("types.ejs",{},"types.ts", projectName + "/src/systems");
-  createFilesAndFolder("container.ejs",{},"container.ts", projectName+ "/src/systems");
-  createFilesAndFolder("container.core.ejs",{},"container.core.ts", projectName+ "/src/systems");
+  createFilesAndFolder(
+    "package.ejs",
+    { projectName },
+    "package.json",
+    projectName,
+  );
+  createFilesAndFolder(
+    "index.router.ejs",
+    {},
+    "index.ts",
+    projectName + "/src/router",
+  );
+  createFilesAndFolder(
+    "api.router.ejs",
+    {},
+    "api.router.ts",
+    projectName + "/src/router",
+  );
+  createFilesAndFolder(
+    "example.service.ejs",
+    {},
+    "example.service.ts",
+    projectName + "/src/services",
+  );
+  createFilesAndFolder(
+    "example.controller.ejs",
+    {},
+    "example.controller.ts",
+    projectName + "/src/controllers",
+  );
+  createFilesAndFolder(
+    "example.repository.ejs",
+    {},
+    "example.repository.ts",
+    projectName + "/src/repositories",
+  );
+  createFilesAndFolder(
+    "types.ejs",
+    {},
+    "types.ts",
+    projectName + "/src/systems",
+  );
+  createFilesAndFolder(
+    "container.ejs",
+    {},
+    "container.ts",
+    projectName + "/src/systems",
+  );
+  createFilesAndFolder(
+    "container.core.ejs",
+    {},
+    "container.core.ts",
+    projectName + "/src/systems",
+  );
 
-  createFilesAndFolder("example.env.ejs",{}, "example.env", projectName);
-  createFilesAndFolder("example.model.ejs",{}, "example.model.ts", projectName+ "/src/models");
-  createFilesAndFolder("model.array.ejs",{}, "model.array.ts", projectName+ "/src/database");
-  createFilesAndFolder("typeorm.ejs",{}, "typeORM.ts", projectName+ "/src/database");
+  createFilesAndFolder("example.env.ejs", {}, "example.env", projectName);
+  createFilesAndFolder(
+    "example.model.ejs",
+    {},
+    "example.model.ts",
+    projectName + "/src/models",
+  );
+  createFilesAndFolder(
+    "model.array.ejs",
+    {},
+    "model.array.ts",
+    projectName + "/src/database",
+  );
+  createFilesAndFolder(
+    "typeorm.ejs",
+    {},
+    "typeORM.ts",
+    projectName + "/src/database",
+  );
 
   console.log("📦 Installing dependencies...");
   execSync("npm install", { cwd: projectPath, stdio: "inherit" });
@@ -77,8 +167,32 @@ function createController(controllerName) {
   createFilesAndFolder(
     "controller.ejs",
     { controllerName },
-    `${controllerName}Controller.ts`,
+    `${controllerName.toLowerCase()}.controller.ts`,
     "src/controllers",
+  );
+}
+function createService(serviceName) {
+  if (!serviceName) {
+    console.log("❌ Please provide a service name");
+    process.exit(1);
+  }
+  createFilesAndFolder(
+    "service.ejs",
+    { serviceName },
+    `${serviceName.toLowerCase()}.service.ts`,
+    "src/services",
+  );
+}
+function createRepository(repositoryName) {
+  if (!repositoryName) {
+    console.log("❌ Please provide a repository name");
+    process.exit(1);
+  }
+  createFilesAndFolder(
+    "repository.ejs",
+    { repositoryName },
+    `${repositoryName.toLowerCase()}.repository.ts`,
+    "src/repositories",
   );
 }
 
