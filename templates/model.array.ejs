@@ -1,0 +1,4 @@
+import { EntitySchema, MixedList } from "typeorm";
+import { ExampleTable } from "../models/example.model";
+
+export const ModelArray:MixedList<string | Function | EntitySchema<any>> = [ ExampleTable];

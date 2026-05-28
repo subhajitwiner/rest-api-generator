@@ -45,6 +45,8 @@ function createProject(projectName) {
   }
   const projectPath = path.join(process.cwd(), projectName);
 
+  console.log(`📁 Creating project files`);
+
   createFilesAndFolder("index.ejs", {}, "index.ts", projectName + "/src");
   createFilesAndFolder("nodemon.ejs", {}, "nodemon.json", projectName);
   createFilesAndFolder("tsconfig.ejs", {}, "tsconfig.json", projectName);
@@ -57,6 +59,11 @@ function createProject(projectName) {
   createFilesAndFolder("types.ejs",{},"types.ts", projectName + "/src/systems");
   createFilesAndFolder("container.ejs",{},"container.ts", projectName+ "/src/systems");
   createFilesAndFolder("container.core.ejs",{},"container.core.ts", projectName+ "/src/systems");
+
+  createFilesAndFolder("example.env.ejs",{}, "example.env", projectName);
+  createFilesAndFolder("example.model.ejs",{}, "example.model.ts", projectName+ "/src/models");
+  createFilesAndFolder("model.array.ejs",{}, "model.array.ts", projectName+ "/src/database");
+  createFilesAndFolder("typeorm.ejs",{}, "typeORM.ts", projectName+ "/src/database");
 
   console.log("📦 Installing dependencies...");
   execSync("npm install", { cwd: projectPath, stdio: "inherit" });

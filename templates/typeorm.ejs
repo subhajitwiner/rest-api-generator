@@ -1,0 +1,24 @@
+import { DataSource } from "typeorm";
+import { ModelArray } from "./model.array";
+import {config } from 'dotenv';
+
+export const AppDataSource = new DataSource({
+    type: "mysql",
+    host: config().parsed?.DB_HOST || "localhost",
+    port: parseInt(config().parsed?.DB_PORT || "3306"),
+
+    username: config().parsed?.DB_USERNAME || "root",
+    password: config().parsed?.DB_PASSWORD || "",
+    database: config().parsed?.DB_DATABASE || "",
+    synchronize: true,
+    logging: true,
+    entities: ModelArray,
+    subscribers: [],
+    migrations: [],
+});
+AppDataSource.initialize()
+    .then(res => {
+        console.log("database connected", res.isInitialized)
+    })
+    .catch(error => console.log(error))
+
