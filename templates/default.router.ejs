@@ -1,0 +1,11 @@
+import { makeInvoker } from 'awilix-express';
+import { Router } from 'express';
+import { <%= routerObject.controllerName %> } from '../controllers/<%= routerObject.controllerFileName %>';
+
+const controller = makeInvoker(<%= routerObject.controllerName %>);
+
+export const <%= routerObject.routerName %> = (router: Router, prefix = "") => {
+    <% if(routerObject.routerName === "ApiRouter") { %>
+    router.get(prefix + "/welcome", controller("welcome"));
+    <% } else %>
+};

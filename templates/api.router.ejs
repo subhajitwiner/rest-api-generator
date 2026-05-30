@@ -1,9 +1,0 @@
-import { makeInvoker } from 'awilix-express';
-import { Router } from 'express';
-import { ExampleController } from '../controllers/example.controller';
-
-const controller = makeInvoker(ExampleController);
-
-export const ApiRouter = (router: Router, prefix = "") => {
-    router.get(prefix + "/welcome", controller("welcome"));
-};
