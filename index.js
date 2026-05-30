@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
 const ejs = require("ejs");
+const { Project } = require("ts-morph");
 
 const program = new Command();
 const create = program.command("create");
@@ -21,8 +22,33 @@ create
 create
   .command("controller <name>")
   .description("Create a new controller")
-  .action((name) => {
-    createController(name);
+  .action(async (name) => {
+    let useDefault = await checkFileExistsAndPrompt(
+      `${name.toLowerCase()}.router.ts`,
+      "router",
+      `Router file for ${name} does not exist. Do you want to create a default router?`,
+    );
+    if (useDefault) {
+      updateApiRouter(name);
+      createController(name);
+      console.log(`New controller created as ${name}.controller.ts and registered in API router`);
+    } else {
+      let routerObject = {
+        routerName: toTitleCase(name) + "Router",
+        controllerName: toTitleCase(name) + "Controller",
+        controllerFileName: name.toLowerCase() + ".controller",
+      };
+      createFilesAndFolder(
+        "default.router.ejs",
+        { routerObject },
+        `${name}.router.ts`,
+        "src/router",
+      );
+      updateIndexRouter(name);
+      createController(name);
+      console.log(`New router created as ${name}.router.ts`);
+    }
+    
   });
 
 create
@@ -43,11 +69,13 @@ create
   .command("Help")
   .description("Get help for a specific command")
   .action((name) => {
-    console.log("using this command: "+
-      "\n rag create controller <name> - Create a new controller" +
-      "\n rag create service <name> - Create a new service" +
-      "\n rag create repository <name> - Create a new repository" +
-      "\n rag create model <name> - Create a new model");
+    console.log(
+      "using this command: " +
+        "\n rag create controller <name> - Create a new controller" +
+        "\n rag create service <name> - Create a new service" +
+        "\n rag create repository <name> - Create a new repository" +
+        "\n rag create model <name> - Create a new model",
+    );
   });
 
 program
@@ -92,9 +120,14 @@ function createProject(projectName) {
     "index.ts",
     projectName + "/src/router",
   );
+  let routerObject = {
+    routerName: "ApiRouter",
+    controllerName: "ExampleController",
+    controllerFileName: "example.controller",
+  };
   createFilesAndFolder(
-    "api.router.ejs",
-    {},
+    "default.router.ejs",
+    { routerObject },
     "api.router.ts",
     projectName + "/src/router",
   );
@@ -209,4 +242,161 @@ function createFilesAndFolder(templateFile, data, filename, filePath = "") {
   } else {
     fs.writeFileSync(path.join(`${filename}`), output);
   }
+}
+function toTitleCase(str) {
+  return str
+    .split(/[\s-_]+/) // handle space, dash, underscore
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("");
+}
+function updateIndexRouter(name) {
+  const project = new Project();
+  const filePath = path.join(process.cwd(), "src/router/index.ts");
+  const sourceFile = project.addSourceFileAtPath(filePath);
+  const pascal = toPascalCase(name);
+  const kebab = toKebabCase(name);
+  const importName = `${pascal}Router`;
+  const importPath = `./${kebab}.router`;
+
+  // ======================
+  // ✅ 1. Add Import
+  // ======================
+  const existingImport = sourceFile.getImportDeclaration(
+    (imp) => imp.getModuleSpecifierValue() === importPath,
+  );
+  if (!existingImport) {
+    sourceFile.addImportDeclaration({
+      namedImports: [importName],
+      moduleSpecifier: importPath,
+    });
+  }
+  // ======================
+  // ✅ 2. Find Class
+  // ======================
+  const cls = sourceFile.getClass("IndexRouter");
+  if (!cls) {
+    console.log("❌ IndexRouter class not found");
+    return;
+  }
+  // ======================
+  // ✅ 3. Find route() method
+  // ======================
+  const method = cls.getMethod("route");
+  if (!method) {
+    console.log("❌ route() method not found");
+    return;
+  }
+  const body = method.getBody();
+  if (!body) return;
+  const routeLine = `${importName}(this.router,'/${kebab}');`;
+  // ======================
+  // ✅ 4. Prevent duplicate
+  // ======================
+  if (body.getText().includes(routeLine)) {
+    console.log("⚠️ Router already exists");
+    return;
+  }
+  // ======================
+  // ✅ 5. Insert before return
+  // ======================
+  const returnStmt = body
+    .getStatements()
+    .find((stmt) => stmt.getText().includes("return this.router"));
+
+  if (returnStmt) {
+    body.insertStatements(returnStmt.getChildIndex(), routeLine);
+  }
+  // ======================
+  // ✅ 6. Save file
+  // ======================
+  sourceFile.saveSync();
+  console.log("✅ Index router updated (AST safe)");
+}
+function toPascalCase(str) {
+  return str
+    .split(/[\s-_]+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("");
+}
+function toKebabCase(str) {
+  return str
+    .replace(/([a-z])([A-Z])/g, "$1-$2")
+    .replace(/\s+/g, "-")
+    .toLowerCase();
+}
+function toCamelCase(str) {
+  const pascal = toPascalCase(str);
+  return pascal.charAt(0).toLowerCase() + pascal.slice(1);
+}
+/**
+ * @param {string} fileName - The name of the file to check for existence.
+ * @param {string} directory - The directory where the file is expected to be located.
+ * @param {string} message - The message to display in the confirmation prompt if the file does not exist.
+ * @returns {Promise<boolean>} - A promise that resolves to a boolean indicating whether to use the default option or not.
+ */
+async function checkFileExistsAndPrompt(fileName, directory, message) {
+  const filepath = path.join(process.cwd(), `src/${directory}/${fileName}`);
+  const { confirm } = await import("@inquirer/prompts");
+  let useDefault = false;
+  if (!fs.existsSync(filepath)) {
+    useDefault = await confirm({
+      message,
+      default: true,
+    });
+  }
+  return useDefault;
+}
+
+function updateApiRouter(name) {
+  const { Project } = require("ts-morph");
+  const path = require("path");
+
+  const project = new Project();
+
+  const filePath = path.join(process.cwd(), "src/router/api.router.ts");
+  const sourceFile = project.addSourceFileAtPath(filePath);
+
+  const pascal = toPascalCase(name);
+  const camel = toCamelCase(name);
+  const kebab = toKebabCase(name);
+
+  const controllerClass = `${pascal}Controller`;
+  const controllerVar = `${camel}Controller`;
+  const importPath = `../controllers/${kebab}.controller`;
+
+  // ✅ Add import
+  const existingImport = sourceFile.getImportDeclaration(
+    (imp) => imp.getModuleSpecifierValue() === importPath
+  );
+
+  if (!existingImport) {
+    sourceFile.addImportDeclaration({
+      namedImports: [controllerClass],
+      moduleSpecifier: importPath,
+    });
+  }
+
+  // ✅ Add makeInvoker
+  const exists = sourceFile.getVariableStatements().some(v =>
+    v.getText().includes(`const ${controllerVar}`)
+  );
+
+  if (!exists) {
+    const lastInvoker = sourceFile
+      .getVariableStatements()
+      .filter(v => v.getText().includes("makeInvoker"))
+      .pop();
+
+    if (lastInvoker) {
+      const index = lastInvoker.getChildIndex();
+      sourceFile.insertStatements(
+        index + 1,
+        `const ${controllerVar} = makeInvoker(${controllerClass});`
+      );
+    }
+  }
+
+  sourceFile.saveSync();
+
+  console.log("✅ Controller registered in default API router");
 }
