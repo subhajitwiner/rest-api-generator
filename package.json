@@ -1,6 +1,6 @@
 {
   "name": "typescript-rest-api-generator",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "CLI to generate TypeScript REST API with custom templates",
   "main": "try.js",
   "scripts": {
@@ -10,16 +10,13 @@
     "rag": "./index.js"
   },
   "homepage": "https://github.com/subhajitwiner/rest-api-generator",
-
   "repository": {
     "type": "git",
     "url": "https://github.com/subhajitwiner/rest-api-generator"
   },
-
   "bugs": {
     "url": "https://github.com/subhajitwiner/rest-api-generator/issues"
   },
-
   "keywords": [
     "cli",
     "node",
