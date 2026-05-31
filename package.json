@@ -1,6 +1,6 @@
 {
   "name": "typescript-rest-api-generator",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "CLI to generate TypeScript REST API with custom templates",
   "main": "try.js",
   "scripts": {
