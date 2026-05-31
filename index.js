@@ -24,19 +24,12 @@ create
   .command("controller <name>")
   .description("Create a new controller")
   .action(async (name) => {
-    let useDefault = await checkFileExistsAndPrompt(
+    let createNewRouter = await checkFileExistsAndPrompt(
       `${name.toLowerCase()}.router.ts`,
       "router",
       `Router file for ${name} does not exist. Do you want to create a ${toTitleCase(name)}Router?`,
     );
-    if (useDefault) {
-      updateApiRouter(name);
-      updateContainer(name, "controller");
-      createController(name);
-      console.log(
-        `New controller created as ${name}.controller.ts and registered in API router`,
-      );
-    } else {
+    if (createNewRouter) {
       let routerObject = {
         routerName: toTitleCase(name) + "Router",
         controllerName: toTitleCase(name) + "Controller",
@@ -53,6 +46,13 @@ create
       updateContainer(name, "controller");
       createController(name);
       console.log(`New router created as ${name}.router.ts and new controller created as ${name}.controller.ts and router registered in index router`);
+    } else {
+      updateApiRouter(name);
+      updateContainer(name, "controller");
+      createController(name);
+      console.log(
+        `New controller created as ${name}.controller.ts and registered in API router`,
+      );
     }
   });
 
