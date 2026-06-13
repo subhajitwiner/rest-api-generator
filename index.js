@@ -13,7 +13,7 @@ create
   .command("new <projectName>")
   .description("Create a new Node.js project")
   .action((projectName) => {
-    createProject(projectName, __dirname);
+    createProject(projectName);
   });
 
 // 🔹 SAY HELLO COMMAND
@@ -21,7 +21,7 @@ create
   .command("controller <name>")
   .description("Create a new controller")
   .action(async (name) => {
-    await createController(name, __dirname);
+    await createController(name);
   });
 
 create
@@ -29,14 +29,14 @@ create
   .description("Create a new service")
   .action((name) => {
     console.log(name + " creating");
-    createService(name, __dirname);
+    createService(name);
   });
 
 create
   .command("repository <name>")
   .description("Create a new repository")
   .action((name) => {
-    createRepository(name, __dirname);
+    createRepository(name);
   });
 
 create
