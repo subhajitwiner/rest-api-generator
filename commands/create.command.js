@@ -7,6 +7,13 @@ const { CreateService } = require("../services/create.service");
  */
 class CreateCommand {
   service = new CreateService();
+  register(commandName) {
+    this.createNew(commandName);
+    this.createControllerCommand(commandName);
+    this.createServiceCommand(commandName);
+    this.createRepositoryCommand(commandName);
+    this.showHelpCommand(commandName);
+  }
   /**
    * @method createNew
    * @param {Command} commandName - The command to create a new project
@@ -61,7 +68,7 @@ class CreateCommand {
    * @method showHelp
    * @param {Command} commandName - The command to display help information
    */
-  showHelp(commandName) {
+  showHelpCommand(commandName) {
     commandName
       .command("Help")
       .description("Get help for a specific command")
