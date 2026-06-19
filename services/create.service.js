@@ -1,6 +1,8 @@
 const { toTitleCase } = require("../utils/naming.util");
 const { createFilesAndFolder } = require("../utils/file.util");
 const {generateFromTemplate} = require("../utils/generator.util");
+const { validateRequiredName } = require("../utils/validation.util");
+const { confirmIfFileMissing } = require("../utils/prompt.util");
 const {
   updateApiRouter,
   updateIndexRouter,
@@ -24,10 +26,7 @@ class CreateService {
    * @returns {void}
    */
   createProject(projectName) {
-    if (!projectName) {
-      console.log("❌ Please provide a project name");
-      process.exit(1);
-    }
+    validateRequiredName(projectName, "project");
     const indexpath = projectName + "/src";
     const routerpath = indexpath + "/router";
     const servicepath = indexpath + "/services";
@@ -72,10 +71,10 @@ class CreateService {
    * @returns {Promise<void>}
    */
   async generateController(name) {
-    this.validateName(name, "controller");
+    validateRequiredName(name, "controller");
     const kebab = name.toLowerCase();
 
-    const shouldCreateRouter = await this.checkFileExistsAndPrompt(
+    const shouldCreateRouter = await confirmIfFileMissing(
       `${kebab}.router.ts`,
       "router",
       `Router for ${name} not found. Create ${toTitleCase(name)}Router?`,
@@ -110,7 +109,7 @@ class CreateService {
    * @returns {void}
    */
   generateService(name) {
-    this.validateName(name, "service");
+    validateRequiredName(name, "service");
     generateFromTemplate(
       "service.ejs",
       name,
@@ -128,7 +127,7 @@ class CreateService {
    * @returns {void}
    */
   generateRepository(name) {
-    this.validateName(name, "repository");
+    validateRequiredName(name, "repository");
     generateFromTemplate(
       "repository.ejs",
       name,
@@ -146,7 +145,7 @@ class CreateService {
    * @returns {void}
    */
   generateModel(name) {
-    this.validateName(name, "model");
+    validateRequiredName(name, "model");
     generateFromTemplate(
       "model.ejs",
       name,
@@ -156,32 +155,6 @@ class CreateService {
     );
     updateModelArray(name);
     console.log(`✅ Model created: ${name}.model.ts`);
-  }
-  /**
-   * Validates the name of a file to be created
-   * @method validateName
-   * @param {string} name - The name of the file to be created
-   * @param {string} type - The type of the file to be created
-   * @returns {void}
-   */
-  validateName(name, type) {
-    if (!name) {
-      console.log(`❌ Please provide a ${type} name`);
-      process.exit(1);
-    }
-  }
-  async checkFileExistsAndPrompt(fileName, directory, message) {
-    const filepath = path.join(process.cwd(), `src/${directory}/${fileName}`);
-    const { confirm } = await import("@inquirer/prompts");
-
-    if (!fs.existsSync(filepath)) {
-      return await confirm({
-        message,
-        default: true,
-      });
-    }
-
-    return false;
   }
   createRouter(name) {
     const routerObject = {
