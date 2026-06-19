@@ -12,6 +12,7 @@ class CreateCommand {
     this.createControllerCommand(commandName);
     this.createServiceCommand(commandName);
     this.createRepositoryCommand(commandName);
+    this.createModelCommand(commandName);
     this.showHelpCommand(commandName);
   }
   /**
@@ -63,6 +64,18 @@ class CreateCommand {
       .action((name) => {
         this.service.generateRepository(name);
       });
+  }
+  /**
+   * @method createModelCommand
+   * @param {Command} commandName 
+  */
+  createModelCommand(commandName){
+    commandName
+    .command("model <name>")
+    .description("Create a new model")
+    .action((name) => {
+      this.service.generateModel(name);
+    });
   }
   /**
    * @method showHelp

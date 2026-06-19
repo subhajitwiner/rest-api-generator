@@ -145,6 +145,10 @@ function updateIndexRouter(name) {
   sourceFile.saveSync();
   console.log("✅ Index router updated");
 }
+/**
+ * @param {string} kind - "controller", "service", or "repository"
+ * @param {string} name - The name of the item to update
+ */
 function updateContainer(name, kind) {
   const sourceFile = loadSourceFile("src/systems/container.ts");
   if (!sourceFile) return;
@@ -220,7 +224,7 @@ function updateContainer(name, kind) {
   lines.splice(insertIndex, 0, entryLine);
 
   const newBlock = `container.register({
-${lines.join("\n")}
+  ${lines.join("\n")}
 });`;
 
   const updatedText = sourceText.replace(registerMatch[0], newBlock);
@@ -229,6 +233,50 @@ ${lines.join("\n")}
 
   console.log(`✅ Container updated for ${kind}: ${name}`);
 }
+/**
+ * @param {string} modelName 
+ * @returns {void}
+*/
+function updateModelArray(modelName){
+  const sourceFile = loadSourceFile("src/database/model.array.ts"); 
+  if (!sourceFile) return;
+
+  const pascal = toPascalCase(modelName);
+  const kebab = toKebabCase(modelName);
+
+  
+  const modelClass = `${pascal}`;
+  const importPath = `../models/${kebab}.model`;
+
+  // ✅ Add import
+  addImportIfNotExists(sourceFile, modelClass, importPath);
+
+  // ✅ Find ModelArray variable
+  const variable = sourceFile.getVariableDeclaration("ModelArray");
+
+  if (!variable) {
+    console.log("❌ ModelArray not found");
+    return;
+  }
+   const initializer = variable.getInitializer();
+   if (!initializer || !initializer.getText().startsWith("[")) {
+    console.log("❌ ModelArray is not an array");
+    return;
+  }
+   // ✅ Get existing items
+  const arrayText = initializer.getText();
+  // Prevent duplicate
+  if (arrayText.includes(modelClass)) {
+    console.log("⚠️ Model already exists in ModelArray");
+    return;
+  }
+  // Remove closing ]
+  const updatedArray = arrayText.replace(/\]$/, `, ${modelClass}]`);
+  initializer.replaceWithText(updatedArray);
+  sourceFile.saveSync();
+  console.log(`✅ Model registered: ${modelClass}`);
+
+}
 
 // ======================
 
@@ -236,4 +284,5 @@ module.exports = {
   updateApiRouter,
   updateIndexRouter,
   updateContainer,
+  updateModelArray,
 };
