@@ -1,14 +1,9 @@
 const { toTitleCase } = require("../utils/naming.util");
 const { createFilesAndFolder } = require("../utils/file.util");
-const {generateFromTemplate} = require("../utils/generator.util");
+const { generateFromTemplate } = require("../utils/generator.util");
 const { validateRequiredName } = require("../utils/validation.util");
 const { confirmIfFileMissing } = require("../utils/prompt.util");
-const {
-  updateApiRouter,
-  updateIndexRouter,
-  updateContainer,
-  updateModelArray,
-} = require("../update.files");
+const { ProjectModifier } = require("../ast/project.modifier");
 const path = require("path");
 const fs = require("fs");
 const { execSync } = require("child_process");
@@ -18,7 +13,10 @@ const { execSync } = require("child_process");
  * @description Service class responsible for creating new projects and generating files for controllers, services, and repositories.
  */
 class CreateService {
-  constructor() { }
+  projectModifier = new ProjectModifier();
+
+  constructor() {
+  }
   /**
    * @method createProject
    * @description Creates a new Node.js project with the specified name, sets up the necessary file structure, and installs dependencies.
@@ -82,10 +80,10 @@ class CreateService {
 
     if (shouldCreateRouter) {
       this.createRouter(name);
-      updateIndexRouter(name);
+      this.projectModifier.registerRouterInIndex(name);
       console.log("✅ Router created and registered in index router");
     } else {
-      updateApiRouter(name);
+      this.projectModifier.registerControllerInApiRouter(name);
       console.log("✅ Registered in API router");
     }
 
@@ -98,7 +96,7 @@ class CreateService {
       "controllerName",
     );
 
-    updateContainer(name, "controller");
+    this.projectModifier.registerDependencyInContainer(name, "controller");
 
     console.log(`✅ Controller created: ${name}.controller.ts`);
   }
@@ -117,7 +115,7 @@ class CreateService {
       "src/services",
       "serviceName",
     );
-    updateContainer(name, "service");
+    this.projectModifier.registerDependencyInContainer(name, "service");
     console.log(`✅ Service created: ${name}.service.ts`);
   }
   /**
@@ -135,7 +133,7 @@ class CreateService {
       "src/repositories",
       "repositoryName",
     );
-    updateContainer(name, "repository");
+    this.projectModifier.registerDependencyInContainer(name, "repository");
     console.log(`✅ Repository created: ${name}.repository.ts`);
   }
   /**
@@ -153,7 +151,7 @@ class CreateService {
       "src/models",
       "modelName",
     );
-    updateModelArray(name);
+    this.projectModifier.registerModelInArray(name);
     console.log(`✅ Model created: ${name}.model.ts`);
   }
   createRouter(name) {
