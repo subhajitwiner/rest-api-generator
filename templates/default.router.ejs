@@ -7,5 +7,6 @@ const controller = makeInvoker(<%= routerObject.controllerName %>);
 export const <%= routerObject.routerName %> = (router: Router, prefix = "") => {
     <% if(routerObject.routerName === "ApiRouter") { %>
     router.get(prefix + "/welcome", controller("welcome"));
+    router.post(prefix + "/create", controller("create"));
     <% } else %>
 };

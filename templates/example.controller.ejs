@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { ExampleService } from "../services/example.service";
+import { ExampleDto } from "../dto/example.dto";
+import { validateDto } from "@subhajitwiner/dtovalidator";
 
 export class ExampleController {
     private readonly exampleService: ExampleService;
@@ -9,5 +11,13 @@ export class ExampleController {
     welcome = async (req: Request, res: Response) => {
         const info = await this.exampleService.ReturnFromService();
         res.status(200).json({ data: info });
+    };
+    create = async (req: Request, res: Response) => { 
+         try {
+             const dto = await validateDto(ExampleDto, req.body);
+             res.status(201).json({ message: "Example created", data: dto });
+         } catch (error) {
+             res.status(400).json(error);
+         }
     };
 }

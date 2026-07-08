@@ -1,0 +1,14 @@
+import { IsEmail, IsInt, IsString, Min, MinLength } from "class-validator";
+export class ExampleDto {
+    @IsString()
+    @MinLength(7)
+    firstName!: string;
+
+    @IsInt()
+    @Min(18)
+    age!: number;
+
+    @IsEmail()
+    @MinLength(6)
+    email!: string;
+}

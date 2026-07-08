@@ -33,6 +33,7 @@ class CreateService {
     const systempath = indexpath + "/systems";
     const modelpath = indexpath + "/models";
     const databasepath = indexpath + "/database";
+    const dtopath = indexpath + "/dto";
     let routerObject = {
       routerName: "ApiRouter",
       controllerName: "ExampleController",
@@ -56,6 +57,7 @@ class CreateService {
     createFilesAndFolder("example.model.ejs", {}, "example.model.ts", modelpath);
     createFilesAndFolder("model.array.ejs", {}, "model.array.ts", databasepath);
     createFilesAndFolder("typeorm.ejs", {}, "typeORM.ts", databasepath);
+    createFilesAndFolder("example.dto.ejs", {}, "example.dto.ts", dtopath);
 
     console.log("📦 Installing dependencies...");
     execSync("npm install", { cwd: projectPath, stdio: "inherit" });
