@@ -58,6 +58,7 @@ class CreateService {
     createFilesAndFolder("model.array.ejs", {}, "model.array.ts", databasepath);
     createFilesAndFolder("typeorm.ejs", {}, "typeORM.ts", databasepath);
     createFilesAndFolder("example.dto.ejs", {}, "example.dto.ts", dtopath);
+    createFilesAndFolder("dockerfile.ejs", {}, "Dockerfile", projectName);
 
     console.log("📦 Installing dependencies...");
     execSync("npm install", { cwd: projectPath, stdio: "inherit" });
