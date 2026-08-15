@@ -1,4 +1,4 @@
-const { toTitleCase } = require("../utils/naming.util");
+const { toTitleCase, toKebabCase } = require("../utils/naming.util");
 const { createFilesAndFolder } = require("../utils/file.util");
 /**
  * @function generateFromTemplate
@@ -13,7 +13,7 @@ function generateFromTemplate(template, name, suffix, folder, keyName) {
     createFilesAndFolder(
         template,
         { [keyName]: toTitleCase(name) },
-        `${name.toLowerCase()}.${suffix}.ts`,
+        `${toKebabCase(name)}.${suffix}.ts`,
         folder,
     );
 }

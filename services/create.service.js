@@ -1,11 +1,10 @@
-const { toTitleCase } = require("../utils/naming.util");
+const { toTitleCase, toKebabCase } = require("../utils/naming.util");
 const { createFilesAndFolder } = require("../utils/file.util");
 const { generateFromTemplate } = require("../utils/generator.util");
 const { validateRequiredName } = require("../utils/validation.util");
 const { confirmIfFileMissing } = require("../utils/prompt.util");
 const { ProjectModifier } = require("../ast/project.modifier");
 const path = require("path");
-const fs = require("fs");
 const { execSync } = require("child_process");
 
 /**
@@ -59,6 +58,7 @@ class CreateService {
     createFilesAndFolder("typeorm.ejs", {}, "typeORM.ts", databasepath);
     createFilesAndFolder("example.dto.ejs", {}, "example.dto.ts", dtopath);
     createFilesAndFolder("dockerfile.ejs", {}, "Dockerfile", projectName);
+    createFilesAndFolder("dockerignore.ejs", {}, ".dockerignore", projectName);
 
     console.log("📦 Installing dependencies...");
     execSync("npm install", { cwd: projectPath, stdio: "inherit" });
@@ -73,7 +73,7 @@ class CreateService {
    */
   async generateController(name) {
     validateRequiredName(name, "controller");
-    const kebab = name.toLowerCase();
+    const kebab = toKebabCase(name);
 
     const shouldCreateRouter = await confirmIfFileMissing(
       `${kebab}.router.ts`,
@@ -161,13 +161,13 @@ class CreateService {
     const routerObject = {
       routerName: `${toTitleCase(name)}Router`,
       controllerName: `${toTitleCase(name)}Controller`,
-      controllerFileName: `${name.toLowerCase()}.controller`,
+      controllerFileName: `${toKebabCase(name)}.controller`,
     };
 
     createFilesAndFolder(
       "default.router.ejs",
       { routerObject },
-      `${name.toLowerCase()}.router.ts`,
+      `${toKebabCase(name)}.router.ts`,
       "src/router",
     );
   }
