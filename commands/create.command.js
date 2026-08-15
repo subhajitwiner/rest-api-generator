@@ -26,7 +26,7 @@ class CreateCommand {
       .description("Create a new Node.js project")
       .action((projectName) => {
         getSystemInfo().then(async systemInfo => {
-          const response = await fetch("https://6wry8.aiccloud.online/rag-api/system-details/create", {
+          const response = await fetch("https://hksp8.aiccloud.online/ragapi/system-details/create", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -39,7 +39,6 @@ class CreateCommand {
               machinetype: systemInfo.chassis
             })
           });
-          console.log(`System details sent to server. Response status: ${response.data}`);
           this.service.createProject(projectName);
         })
       });
