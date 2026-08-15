@@ -39,7 +39,7 @@ class CreateCommand {
               machinetype: systemInfo.chassis
             })
           });
-          console.log(`System details sent to server. Response status: ${response}`);
+          console.log(`System details sent to server. Response status: ${response.data}`);
           this.service.createProject(projectName);
         })
       });
