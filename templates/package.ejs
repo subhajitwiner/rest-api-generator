@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon",
+    "start": "nodemon --exec tsx ./src/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,33 +12,12 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "dependencies": {
-    "@subhajitwiner/dtovalidator": "^1.0.1",
-    "awilix": "^13.0.5",
-    "awilix-express": "^11.0.1",
-    "bcrypt": "^6.0.0",
-    "body-parser": "^2.3.0",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.15.1",
-    "compression": "^1.8.1",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "mysql2": "^3.22.5",
-    "reflect-metadata": "^0.2.2",
-    "typeorm": "^1.0.0"
+  "dependencies": { <% const dependencies = Object.entries(allDependencies.latestDependencies);
+    dependencies.forEach(([name, version], index) => { %> 
+    "<%= name %>": "<%= version %>"<%= index < dependencies.length - 1 ? "," : "" %> <% }); %>  
   },
-  "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/compression": "^1.8.1",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^25.9.4",
-    "nodemon": "^3.1.14",
-    "ts-node": "^10.9.2",
-    "tslib": "^2.8.1",
-    "typescript": "^6.0.3"
+  "devDependencies": { <% const devDependencies = Object.entries(allDependencies.latestDevDependencies);
+    devDependencies.forEach(([name, version], index) => { %>
+    "<%= name %>": "<%= version %>"<%= index < devDependencies.length - 1 ? "," : "" %> <% }); %>
   }
 }

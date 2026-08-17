@@ -5,6 +5,7 @@ const { validateRequiredName } = require("../utils/validation.util");
 const { confirmIfFileMissing } = require("../utils/prompt.util");
 const { ProjectModifier } = require("../ast/project.modifier");
 const path = require("path");
+const { getLatestVersions } = require("../ast/info");
 const { execSync } = require("child_process");
 
 /**
@@ -40,12 +41,50 @@ class CreateService {
     };
     const projectPath = path.join(process.cwd(), projectName);
 
+    const dependencies = [
+      "@subhajitwiner/dtovalidator",
+      "awilix",
+      "awilix-express",
+      "bcrypt",
+      "body-parser",
+      "class-transformer",
+      "class-validator",
+      "compression",
+      "cors",
+      "dotenv",
+      "express",
+      "jsonwebtoken",
+      "mysql2",
+      "reflect-metadata",
+      "typeorm"
+    ];
+
+    const devDependencies = [
+      "@types/bcrypt",
+      "@types/compression",
+      "@types/cors",
+      "@types/express",
+      "@types/jsonwebtoken",
+      "@types/node",
+      "nodemon",
+      "ts-node",
+      "tsx",
+      "tslib",
+      "typescript"
+    ];
+    console.log("Checking dependencies");
+    let latestDependencies = getLatestVersions(dependencies);
+    console.log("dependencies checked");
+    console.log("Checking dev dependencies");
+    let latestDevDependencies = getLatestVersions(devDependencies);
+    console.log("dev dependencies checked");
+    const allDependencies = { latestDependencies, latestDevDependencies }
     console.log(`📁 Creating project files`);
 
     createFilesAndFolder("index.ejs", {}, "index.ts", indexpath);
     createFilesAndFolder("nodemon.ejs", {}, "nodemon.json", projectName);
     createFilesAndFolder("tsconfig.ejs", {}, "tsconfig.json", projectName);
-    createFilesAndFolder("package.ejs", { projectName }, "package.json", projectName);
+    createFilesAndFolder("package.ejs", {projectName, allDependencies} , "package.json", projectName);
     createFilesAndFolder("index.router.ejs", {}, "index.ts", routerpath);
     createFilesAndFolder("default.router.ejs", { routerObject }, "api.router.ts", routerpath);
     createFilesAndFolder("example.service.ejs", {}, "example.service.ts", servicepath);

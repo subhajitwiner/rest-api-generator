@@ -1,4 +1,4 @@
-
+const { execSync } = require("child_process");
 
 /**
  * @function getSystemInfo
@@ -18,5 +18,17 @@ async function getSystemInfo() {
         chassis: systemtype
     };
 }
-module.exports = { getSystemInfo };
+function getLatestVersions(packages) {
+    const result = {};
+    for (const packageName of packages) {
+        // console.log(`Checking ${packageName}...`);
+        const version = execSync(
+            `npm view ${packageName} version`,
+            { encoding: "utf8" }
+        ).trim();
+        result[packageName] = `^${version}`;
+    }
+    return result;
+}
+module.exports = { getSystemInfo, getLatestVersions };
 
